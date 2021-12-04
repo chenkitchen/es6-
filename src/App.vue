@@ -12,6 +12,16 @@ export default {
   name: 'App',
   components: {
     HelloWorld
+  },
+  provide(){
+    return {
+      app:this
+    }
+  },
+  data(){
+    return {
+      name: 'lishi'
+    }
   }
 }
 </script>
