@@ -4,14 +4,28 @@
     子组件要传过来的值：<Children :ftoc.sync='doc.title' :paramsObj='params'/>
     <component :is="componentId" ></component> 
     <button @click="changeC">点击这</button>
-    <button @click="sendAjax">send</button>
+    <button @click="sendAjax" >send</button>
     <button @click="canelSendBtn">cancel</button>
-
+    <input type="file" id="file"  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+    <a href="javascript:selectFile">加载本地excel文件</a>
+    <p>
+      <svg xmlns='http://www.w3.org/2000/svg'>
+        <path d="M50,50A50,50 0 1,1 100,100" style="stroke:#660000; fill:none;"></path>
+      </svg>
+    </p>
+    <div id="box">
+      <!-- 下方div -->
+    <div class="bottom">
+        <a href="www.baidu.com">bottom-百度</a>
+    </div>
+    <!-- 上方div -->
+    <div class="top"></div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import {get} from '../request/http.js';
 import Children from './children.vue';
 import childA from './childA.vue';
 import childB from './childB.vue';
@@ -25,7 +39,7 @@ export default {
   inject:['app'],
   data(){
     return {
-      cancelAjax:null,
+      //cancelAjax:null,
       componentId:'childB',
       title:'单一',
       doc:{
@@ -51,33 +65,41 @@ export default {
     }
   },
   methods:{
+    selectFile() {
+            document.getElementById('file').click();
+        },
     changeC(){
       this.componentId === 'childA'? this.componentId = 'childB':this.componentId = 'childA';
       console.log(this.componentId);
     },
     sendAjax () {
-      axios({
-        url: 'http://localhost:3000/getData',
-        method: 'get',
-        // 定义cancelToken参数，new一个axios.CancelToken实例，向该实例中传入执行器函数
-        // c 是用于取消当前请求的函数
-        // 将来取消请求时调用 cancel()
-        cancelToken: new axios.CancelToken((c) => {
-          this.cancelAjax = c
-        })
-      }).then((res) => {
+      //  this.sendAjaxRandom();
+      // this.canelSendBtn();
+      get('/api/getData').then((res) => {
         // 取消函数设置为 null 如果请求成功了 就不能取消了
-        this.cancelAjax = null
+        // this.cancelAjax = null
         console.log('res', res.data)
       }).catch((err) => {
-        this.cancelAjax = null
+        // this.cancelAjax = null
         console.log(err)
       })
     },
+    // sendAjaxRandom () {
+    //   axios({
+    //     url: '/api/getRandomData',
+    //     method: 'get',
+    //   }).then((res) => {
+    //     // 取消函数设置为 null 如果请求成功了 就不能取消了
+    //     this.cancelAjax = null
+    //     console.log('res', res.data)
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   })
+    // },
     canelSendBtn () {
       // 如果 cancelAjax 是一个函数 说明请求已发送 可以调用
     if (typeof this.cancelAjax === 'function') {
-        this.cancelAjax('取消请求') // 
+        this.cancelAjax() // 
       } else {
         console.log('没有可取消的请求')
       }
@@ -87,11 +109,18 @@ export default {
   },
   created(){
     console.log(this.app.name);
+    console.log(typeof null);//object
+    let arrr = [
+      {name:'zhangsan',age:30},{name:'lishi',age:40},{name:'zhangsan',age:30},{name:'zhangsan',age:30},{name:'zhangsan',age:30}
+    ];
+    let arr1 = [];
+    arrr.map(item=>{
+       arr1 =[...new Set([...arr1,item.name])];
+    })
+    console.log(arr1);
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -106,5 +135,21 @@ li {
 }
 a {
   color: #42b983;
+}
+#box{
+  position: relative;
+}
+.bottom {
+    background: yellow;
+    width: 100px;
+    height: 100px;
+}
+.top {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
 }
 </style>
