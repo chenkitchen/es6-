@@ -21,6 +21,51 @@
     <!-- 上方div -->
     <div class="top"></div>
     </div>
+    <table border="1px" cellpadding="10px" cellspacing="5px" align="center">
+        <tr align="center">
+            <td colspan="4"><input type="text" id="res" size="35px" value="" style="text-align:right;"/></td>
+        </tr>
+        <tr align="center">
+            <td><input type="button" value="power" @click="calc"/></td>
+            <td><input type="button" value="clear" @click="calc"/></td>
+            <td colspan="2"><input type="button" value="      back      " @click="calc"/></td>
+        </tr>
+        <tr align="center">
+            <td><input type="button" value="   1   " @click="calc"/></td>
+            <td><input type="button" value="   2   " @click="calc"/></td>
+            <td><input type="button" value="   3   " @click="calc"/></td>
+            <td><input type="button" value="   +   " @click="calc"/></td>
+        </tr>
+        <tr align="center">
+            <td><input type="button" value="   4   " @click="calc"/></td>
+            <td><input type="button" value="   5   " @click="calc"/></td>
+            <td><input type="button" value="   6   " @click="calc"/></td>
+            <td><input type="button" value="   -    " @click="calc"/></td>
+        </tr>
+        <tr align="center">
+            <td><input type="button" value="   7   " @click="calc"/></td>
+            <td><input type="button" value="   8   " @click="calc"/></td>
+            <td><input type="button" value="   9   " @click="calc"/></td>
+            <td><input type="button" value="   *   " @click="calc"/></td>
+        </tr>
+        <tr align="center">
+            <td><input type="button" value="   0    " @click="calc"/></td>
+            <td><input type="button" value="   =    " @click="calc"/></td>
+            <td><input type="button" value="   %    " @click="calc"/></td>
+            <td><input type="button" value="   /    " @click="calc"/></td>
+        </tr>
+    </table>
+    <select name="province" id="province" @change="chooseCity">
+        <option selected="selected" disabled="disabled">---请选择您的省份---</option>
+        <option value="0">湖南</option>
+        <option value="1">湖北</option>
+        <option value="2">广东</option>
+    </select>
+    <select name="city" id="city">
+        <option selected="selected" disabled="disabled">---请选择您的城市---</option>
+    </select>
+
+
   </div>
 </template>
 
@@ -40,6 +85,8 @@ export default {
   data(){
     return {
       //cancelAjax:null,
+      cities:new Array(3),
+
       componentId:'childB',
       title:'单一',
       doc:{
@@ -103,9 +150,113 @@ export default {
       } else {
         console.log('没有可取消的请求')
       }
+    },
+    calc(event){
+            console.log(event.target.value);
+            // test 
+           // window.alert(event.target.value);
+            
+            var val = new String(event.target.value);
+            // clear space
+            val = val.trim();
+            var res = document.getElementById("res");
+            // clear
+            if(val == "clear"){
+                res.value = "";
+            }
+
+            // back
+            if(val == "back"){
+                res.value = res.value.substring(0, res.value.length - 1);
+            }
+
+            //  power
+            if(val == "power"){
+                val = "p";
+            }
+            // add val to text
+            if(val.length == 1 && val != "="){
+                res.value = res.value + val;
+            }
+
+            // calc result
+            if(val == "="){
+                var arr;
+                var result;
+                // power
+                if(res.value.indexOf("p") != -1){
+                    arr = res.value.split("p");
+                    //window.alert(arr);
+                     result = Math.pow(parseFloat(arr[0]) ,parseFloat(arr[1]));
+                    //window.alert(res);
+                    res.value = result;
+                } 			
+                // plus
+                if(res.value.indexOf("+") != -1){
+                    arr = res.value.split("+");
+                    //window.alert(arr);
+                     result = parseFloat(arr[0]) + parseFloat(arr[1]);
+                    //window.alert(res);
+                    res.value = result;
+                } else if(res.value.indexOf("-") != -1){
+                    // minus
+                    arr = res.value.split("-");
+                    //window.alert(arr);
+                    result = parseFloat(arr[0]) - parseFloat(arr[1]);
+                    //window.alert(res);
+                    res.value = result;
+                } else if(res.value.indexOf("*") != -1){
+                    // multiply
+                    arr = res.value.split("*");
+                    //window.alert(arr);
+                    result = parseFloat(arr[0]) * parseFloat(arr[1]);
+                    //window.alert(res);
+                    res.value = result;
+                } else if(res.value.indexOf("/") != -1){
+                    // division
+                    arr = res.value.split("/");
+                    //window.alert(arr);
+                    result = parseFloat(arr[0]) / parseFloat(arr[1]);
+                    //window.alert(res);
+                    res.value = result;
+                } else if(res.value.indexOf("%") != -1){
+                    // module
+                    arr = res.value.split("%");
+                    //window.alert(arr);
+                    result = parseFloat(arr[0]) % parseFloat(arr[1]);
+                    //window.alert(res);
+                    res.value = result;
+                }
+            }	
+    },
+    $$(id) {
+      return document.getElementById(id);
+    },
+    chooseCity(val) {
+      // 获取id为city的结点
+      console.log(val.target.value);
+      let index = val.target.value;
+      var cityEle = this.$$("city");
+      // 初始化方法
+      // 1.选项设置为0
+      // cityEle.options = 0;
+      // 2.删除所有子结点
+      for (let i = 0; i < cityEle.childNodes?.length;) {
+        // 删除时，数组会自动变小，所以无需自增
+        // window.alert(cityEle.childNodes.length);
+        cityEle.removeChild(cityEle.childNodes[i]);
+      }
+	
+      for(let i = 0; i < this.cities[index]?.length; i++) {
+        var cityText = document.createTextNode(this.cities[index][i]);
+        var cityNode = document.createElement("option");
+        var cityAttr = document.createAttribute("value");
+        cityAttr.value = i;
+        cityNode.setAttributeNode(cityAttr);
+        cityNode.appendChild(cityText);
+        cityEle.appendChild(cityNode);
+      }
     }
-
-
   },
   created(){
     console.log(this.app.name);
@@ -118,7 +269,12 @@ export default {
        arr1 =[...new Set([...arr1,item.name])];
     })
     console.log(arr1);
-  }
+    this.cities[0] = new Array("长沙市","株洲市","湘潭市","衡阳市","邵阳市","岳阳市","常德市","张家界市","益阳市","郴州市","永州市","怀化市","娄底市","湘西土家族苗族自治州");
+    this.cities[1] = new Array("武汉市","黄石市","十堰市","宜昌市","襄樊市","鄂州市","荆门市","孝感市","荆州市","黄冈市","咸宁市","随州市","恩施土家族苗族自治州","仙桃市","潜江市","天门市","神农架林区");
+    this.cities[2] = new Array("广州市","韶关市","深圳市","珠海市","汕头市","佛山市","江门市","湛江市","茂名市","肇庆市","惠州市","梅州市","汕尾市","河源市","阳江市","清远市","东莞市","中山市","潮州市","揭阳市","云浮市");
+
+  },
+  
 }
 </script>
 <style scoped>
