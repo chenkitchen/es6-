@@ -65,7 +65,11 @@
         <option selected="selected" disabled="disabled">---请选择您的城市---</option>
     </select>
 
-
+    <div class="bottom_index">
+      <input type="file" @click="inputText" id="myInput">
+    </div>
+    <page/>
+    <images/>
   </div>
 </template>
 
@@ -74,10 +78,12 @@ import {get} from '../request/http.js';
 import Children from './children.vue';
 import childA from './childA.vue';
 import childB from './childB.vue';
+import page from './selectPage.vue'
+import images from './image.vue'
 export default {
   
   name: 'HelloWorld',
-  components:{Children,childA,childB},
+  components:{Children,childA,childB,page,images},
   props: {
     msg: String,
   },
@@ -112,6 +118,14 @@ export default {
     }
   },
   methods:{
+    inputText(){
+      let input = document.getElementById('myInput');
+      let img = input.files[0];
+      var fr = new FileReader();
+      fr.readAsDataURL(img);
+      console.log(img);
+
+    },
     selectFile() {
             document.getElementById('file').click();
         },
@@ -273,6 +287,11 @@ export default {
     this.cities[1] = new Array("武汉市","黄石市","十堰市","宜昌市","襄樊市","鄂州市","荆门市","孝感市","荆州市","黄冈市","咸宁市","随州市","恩施土家族苗族自治州","仙桃市","潜江市","天门市","神农架林区");
     this.cities[2] = new Array("广州市","韶关市","深圳市","珠海市","汕头市","佛山市","江门市","湛江市","茂名市","肇庆市","惠州市","梅州市","汕尾市","河源市","阳江市","清远市","东莞市","中山市","潮州市","揭阳市","云浮市");
 
+    let str = 'wangwu';
+    for(let i in str){
+      console.log(str.charAt(i));
+    }
+
   },
   
 }
@@ -307,5 +326,10 @@ a {
     top: 0;
     left: 0;
     pointer-events: none;
+}
+.bottom_index{
+  display: flex;
+  justify-items: center;
+  align-items: center;
 }
 </style>

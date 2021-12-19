@@ -1,85 +1,202 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>表格隔行换色</title>
-		<script type="text/javascript">
-               function $(id) {
-	             return document.getElementById(id);
-               }
-               function $name(name) {
-	             return document.getElementsByName(name);
-               }
-			window.onload = function () {
-				var vRows =  $("tab1").tBodies[0].rows;
-				// alert(vRows.length);
-				for(var i = 0; i < vRows.length; i++) {
-					// 高亮显示
-					vRows[i].onmouseover = function() {
-						// alert("over");
-						// 设置属性和直接赋值有什么区别
-						//this.backGroundAttr = this.style.backgroundColor;
-						this.setAttribute("bgc", this.style.backgroundColor);
-						// alert(this.backGroundAttr);
-						this.style.backgroundColor = "red";
-					};
-					vRows[i].onmouseout = function() {
-						// alert("out");
-						// this.style.backgroundColor = this.backGroundAttr;
-						this.style.backgroundColor = this.getAttribute("bgc")
-					};
-					// 隔行变色
-					if(i % 2 == 0) {
-						vRows[i].style.backgroundColor = "gray";
-					} else {
-						vRows[i].style.backgroundColor = "lightgray";
-					}
-				}
-			};
-		</script>
-	</head>
-	<body>
-		<table border="1" width="500" height="50" align="center" id="tab1">
-			<thead>
-				<tr>
-					<th>编号</th>
-					<th>姓名</th>
-					<th>年龄</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr >
-					<td>1</td>
-					<td>张三</td>
-					<td>22</td>
-				</tr>
-				<tr >
-					<td>2</td>
-					<td>李四</td>
-					<td>25</td>
-				</tr>
-				<tr >
-					<td>3</td>
-					<td>王五</td>
-					<td>27</td>
-				</tr>
-				<tr >
-					<td>4</td>
-					<td>赵六</td>
-					<td>29</td>
-				</tr>
-				<tr >
-					<td>5</td>
-					<td>田七</td>
-					<td>30</td>
-				</tr>
-				<tr >
-					<td>6</td>
-					<td>汾九</td>
-					<td>20</td>
-				</tr>
-			</tbody>
-		</table>
-	</body>
-</html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		
+	</style>
+</head>
+<body>
+	<!-- <style>body { min-height: 200px }</style>
+<img src="./cat.png" id="cat" style="position: absolute">
+<img src="./emply.png" id="hat" style="position: absolute">
 
+<script>
+  let cat = document.querySelector("#cat");
+  let hat = document.querySelector("#hat");
+
+  let angle = 0;
+  let lastTime = null;
+  function animate(time) {
+    if (lastTime != null) angle += (time - lastTime) * 0.001;
+    lastTime = time;
+    cat.style.top = (Math.sin(angle) * 40 + 40) + "px";
+    cat.style.left = (Math.cos(angle) * 200 + 230) + "px";
+    hat.style.top = (Math.sin(angle + Math.PI) * 40 + 40) + "px";
+    hat.style.left = (Math.cos(angle + Math.PI) * 200 + 230) + "px";
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+</script>
+<p>🎈</p>
+
+<script>
+  let p = document.querySelector("p");
+  let size;
+  function setSize(newSize) {
+    size = newSize;
+    p.style.fontSize = size + "px";
+  }
+  setSize(20);
+
+  function handleArrow(event) {
+    if (event.key == "ArrowUp") {
+      if (size > 70) {
+        p.textContent = "💥";
+        document.body.removeEventListener("keydown", handleArrow);
+      } else {
+        setSize(size * 1.1);
+        event.preventDefault();
+      }
+    } else if (event.key == "ArrowDown") {
+      setSize(size * 0.9);
+      event.preventDefault();
+    }
+  }
+  document.body.addEventListener("keydown", handleArrow);
+  </script>
+  <style>
+	.trail { /* className for the trail elements */
+	  position: absolute;
+	  height: 6px; width: 6px;
+	  border-radius: 3px;
+	  background: teal;
+	}
+	body {
+	  height: 300px;
+	}
+  </style>
+  
+  <body>
+  <script>
+	let dots = [];
+	for (let i = 0; i < 120; i++) {
+	  let node = document.createElement("div");
+	  node.className = "trail";
+	  document.body.appendChild(node);
+	  dots.push(node);
+	}
+	let currentDot = 0;
+	
+	// window.addEventListener("mousemove", event => {
+	//   let dot = dots[currentDot];
+	//   dot.style.left = (event.pageX - 1) + "px";
+	//   dot.style.top = (event.pageY - 1) + "px";
+	//   currentDot = (currentDot + 1) % dots.length;
+	// });
+  </script>
+  <tab-panel>
+	<div data-tabname="one">Tab one</div>
+	<div data-tabname="two">Tab two</div>
+	<div data-tabname="three">Tab three</div>
+  </tab-panel>
+  <script>
+	function asTabs(node) {
+	  let tabs = Array.from(node.children).map(node => {
+		let button = document.createElement("button");
+		button.textContent = node.getAttribute("data-tabname");
+		let tab = {node, button};
+		button.addEventListener("click", () => selectTab(tab));
+		return tab;
+	  });
+  
+	  let tabList = document.createElement("div");
+	  for (let {button} of tabs) tabList.appendChild(button);
+	  node.insertBefore(tabList, node.firstChild);
+  
+	  function selectTab(selectedTab) {
+		for (let tab of tabs) {
+		  let selected = tab == selectedTab;
+		  tab.node.style.display = selected ? "" : "none";
+		  tab.button.style.color = selected ? "red" : "";
+		}
+	  }
+	  selectTab(tabs[0]);
+	}
+
+asTabs(document.querySelector("tab-panel"));
+</script> -->
+<input type="file" multiple>
+<script>
+	let input = document.querySelector('input');
+	input.addEventListener('change',()=>{
+		// if(input.files.length > 0){
+		// 	let file = input.files[0];
+		// 	console.log("you chose",file.name);
+		// 	if(file.type) console.log("it has type",file.type);
+		// }
+		for(let file of Array.from(input.files)){
+			let reader = new FileReader();
+			reader.addEventListener('load',()=>{
+				console.log('file',file.name,'starts with',reader.result.slice(0,20));
+			});
+			reader.readAsDataURL(file);
+		}
+	})
+
+	function readFileText(file){
+		return new Promise(()=>{
+			let reader = new FileReader();
+			reader.addEventListener('load',()=>{
+				resolve(reader.result);
+			});
+			reader.addEventListener('error',()=>{
+				reject(reader.error);
+			});
+			reader.readAsText(file);
+		})
+	}
+</script>
+<script src="./18_http.js"></script>
+
+Notes: <select></select> <button>Add</button><br>
+<textarea style="width: 100%"></textarea>
+
+<script>
+  let list = document.querySelector("select");
+  let note = document.querySelector("textarea");
+
+  let state;
+  function setState(newState) {
+    list.textContent = "";
+    for (let name of Object.keys(newState.notes)) {
+      let option = document.createElement("option");
+      option.textContent = name;
+      if (newState.selected == name) option.selected = true;
+      list.appendChild(option);
+    }
+    note.value = newState.notes[newState.selected];
+
+    localStorage.setItem("Notes", JSON.stringify(newState));
+    state = newState;
+  }
+  setState(JSON.parse(localStorage.getItem("Notes")) || {
+    notes: {"shopping list": "Carrots\nRaisins"},
+    selected: "shopping list"
+});
+
+list.addEventListener("change", () => {
+  setState({notes: state.notes, selected: list.value});
+});
+note.addEventListener("change", () => {
+  setState({
+	notes: Object.assign({}, state.notes,
+						 {[state.selected]: note.value}),
+	selected: state.selected
+  });
+});
+document.querySelector("button")
+  .addEventListener("click", () => {
+	let name = prompt("Note name");
+	if (name) setState({
+	  notes: Object.assign({}, state.notes, {[name]: ""}),
+	  selected: name
+	});
+  });
+</script>
+</body>
+</html>
